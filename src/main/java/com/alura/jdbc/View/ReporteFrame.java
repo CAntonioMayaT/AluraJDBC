@@ -7,11 +7,12 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import com.alura.jdbc.Controller.CategoriaController;
+import com.alura.jdbc.Controller.ProductoController;
 
 public class ReporteFrame extends JFrame {
 
     private static final long serialVersionUID = 1L;
-
+    private ProductoController productocontroller;
     private JTable tablaReporte;
     private DefaultTableModel modelo;
 
@@ -21,6 +22,7 @@ public class ReporteFrame extends JFrame {
         super("Reporte de produtos del stock");
 
         this.categoriaController = new CategoriaController();
+        this.productocontroller = new ProductoController();
 
         Container container = getContentPane();
         setLayout(null);
@@ -45,9 +47,17 @@ public class ReporteFrame extends JFrame {
     private void cargaReporte() {
         var contenido = categoriaController.cargaReporte();
         
-        // TODO
-        contenido.forEach(fila -> modelo
-                .addRow(new Object[] {}));
+        contenido.forEach(categoria -> {
+        	modelo.addRow(new Object[] {categoria});
+            
+            var productos = this.productocontroller.listar(categoria);	
+            
+            productos.forEach(producto -> modelo.addRow(new Object [] {
+            		"", producto.getNombre(), producto.getCantidad()
+            }
+            ));
+        });
+  
     }
 
 }
